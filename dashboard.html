@@ -1,0 +1,568 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard</title>
+  <link rel="stylesheet" href="public/css/app-shell.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #070c23;
+      --bg-soft: #0d1537;
+      --card: #101a44;
+      --line: #2d3b70;
+      --text: #e8eeff;
+      --muted: #aab7de;
+      --brand: #dc2626;
+      --brand-soft: #f87171;
+      --ok: #10b981;
+      --warn: #f59e0b;
+      --danger: #ef4444;
+      --neutral: #94a3b8;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: "Sora", "Segoe UI", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(1200px 420px at 10% -20%, rgba(220, 38, 38, 0.2), transparent 58%),
+        radial-gradient(1000px 360px at 100% -10%, rgba(59, 130, 246, 0.18), transparent 55%),
+        linear-gradient(165deg, #040817, #0a1030 45%, #0b1538);
+      min-height: 100vh;
+      padding: 18px;
+    }
+
+    .shell {
+      max-width: 1240px;
+      margin: 0 auto;
+      display: grid;
+      gap: 16px;
+    }
+
+    .card {
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: linear-gradient(180deg, rgba(16, 26, 68, 0.96), rgba(10, 16, 43, 0.96));
+      box-shadow: 0 18px 45px rgba(0, 0, 0, 0.35);
+      padding: 18px;
+    }
+
+    .card-hero {
+      background:
+        linear-gradient(90deg, rgba(127, 29, 29, 0.35), rgba(15, 23, 42, 0.3)),
+        linear-gradient(180deg, rgba(16, 26, 68, 0.96), rgba(10, 16, 43, 0.96));
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .eyebrow {
+      margin: 0;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      color: #fca5a5;
+      font-weight: 700;
+    }
+
+    h1, h2, h3 { margin: 0; }
+    h1 { margin-top: 6px; font-size: 30px; }
+    h2 { font-size: 22px; }
+    h3 { font-size: 19px; }
+
+    .sub {
+      margin: 8px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 999px;
+      border: 1px solid;
+      padding: 6px 11px;
+      font-size: 12px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .badge-success { color: #d1fae5; background: rgba(6, 78, 59, 0.4); border-color: rgba(16, 185, 129, 0.45); }
+    .badge-neutral { color: #dbe5ff; background: rgba(30, 41, 59, 0.55); border-color: rgba(148, 163, 184, 0.45); }
+    .badge-brand { color: #fee2e2; background: rgba(127, 29, 29, 0.4); border-color: rgba(248, 113, 113, 0.45); }
+
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .metric-card {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: rgba(8, 14, 38, 0.55);
+      padding: 14px;
+    }
+
+    .metric-label {
+      margin: 0;
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    .metric-value {
+      margin: 8px 0 0;
+      font-size: 40px;
+      line-height: 1;
+      font-weight: 800;
+    }
+
+    .two-cols {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .three-cols {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 16px;
+    }
+
+    .card-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+
+    .chart {
+      height: 280px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: rgba(5, 10, 30, 0.55);
+      padding: 14px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .chart-grid {
+      position: absolute;
+      inset: 0;
+      background-image: linear-gradient(to top, rgba(148, 163, 184, 0.15) 1px, transparent 1px);
+      background-size: 100% 56px;
+      pointer-events: none;
+    }
+
+    .line-svg {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      z-index: 1;
+    }
+
+    .bars {
+      position: relative;
+      z-index: 1;
+      height: 100%;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      align-items: end;
+      gap: 16px;
+      padding: 0 10px 24px;
+    }
+
+    .bar-wrap {
+      display: grid;
+      justify-items: center;
+      align-items: end;
+      gap: 8px;
+      height: 100%;
+    }
+
+    .bar {
+      width: 64%;
+      border-radius: 8px 8px 3px 3px;
+      background: linear-gradient(180deg, rgba(248, 113, 113, 0.95), rgba(185, 28, 28, 0.95));
+      border: 1px solid rgba(248, 113, 113, 0.4);
+    }
+
+    .bar-label { font-size: 12px; color: var(--muted); }
+
+    .warnings {
+      border-color: rgba(245, 158, 11, 0.55);
+      background: rgba(120, 53, 15, 0.25);
+    }
+
+    .warnings ul { margin: 8px 0 0 18px; padding: 0; }
+
+    .table-shell {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      overflow: auto;
+      background: rgba(5, 10, 30, 0.45);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 640px;
+      font-size: 13px;
+    }
+
+    th, td {
+      padding: 10px 12px;
+      border-bottom: 1px solid rgba(148, 163, 184, 0.25);
+      text-align: left;
+    }
+
+    th {
+      color: #dbe5ff;
+      font-weight: 700;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    td { color: #edf2ff; }
+
+    .status-ok {
+      color: #d1fae5;
+      border: 1px solid rgba(16, 185, 129, 0.45);
+      background: rgba(6, 78, 59, 0.35);
+      border-radius: 999px;
+      padding: 4px 8px;
+      font-size: 11px;
+      font-weight: 700;
+      display: inline-block;
+    }
+
+    .status-bad {
+      color: #fecaca;
+      border: 1px solid rgba(248, 113, 113, 0.45);
+      background: rgba(127, 29, 29, 0.38);
+      border-radius: 999px;
+      padding: 4px 8px;
+      font-size: 11px;
+      font-weight: 700;
+      display: inline-block;
+    }
+
+    .table-footer {
+      margin-top: 10px;
+      color: var(--muted);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .pager { display: flex; gap: 8px; }
+
+    .pager button {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: transparent;
+      color: var(--text);
+      font-size: 12px;
+      padding: 6px 9px;
+      cursor: pointer;
+    }
+
+    .link {
+      color: #fca5a5;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 13px;
+    }
+
+    .link:hover { color: #fecaca; }
+
+    @media (max-width: 1100px) {
+      .metrics { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .three-cols { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 780px) {
+      .metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .two-cols { grid-template-columns: 1fr; }
+      .metric-value { font-size: 32px; }
+      h1 { font-size: 25px; }
+    }
+  </style>
+</head>
+<body class="with-sidebar">
+  <aside class="app-sidebar">
+    <div class="meta">
+      <p class="brand">WSS Thesis</p>
+      <p class="title">Realtime Production</p>
+    </div>
+
+    <nav class="sidebar-nav" aria-label="Main">
+      <a class="sidebar-link active" href="dashboard.html">Dashboard</a>
+      <a class="sidebar-link" href="records.html">Records</a>
+      <a class="sidebar-link" href="settings.html">Settings</a>
+      <a class="sidebar-link" href="logout.html">Logout</a>
+    </nav>
+
+    <p class="sidebar-foot">Live monitoring module</p>
+  </aside>
+
+  <main class="shell">
+    <section class="card card-hero">
+      <div class="header">
+        <div>
+          <p class="eyebrow">Production Command Center</p>
+          <h1>Realtime line performance and forecast intelligence</h1>
+          <p class="sub">Live metrics from operations and lines, refreshed automatically when changes arrive.</p>
+        </div>
+        <div style="display:flex; gap:8px;">
+          <span class="badge badge-success">Realtime Active</span>
+          <span class="badge badge-neutral">Weighted MA</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="metrics">
+      <article class="metric-card"><p class="metric-label">Today Ops</p><p id="metric-today-operations" class="metric-value">24</p></article>
+      <article class="metric-card"><p class="metric-label">Total Ops (Loaded)</p><p id="metric-total-operations" class="metric-value">161</p></article>
+      <article class="metric-card"><p class="metric-label">Quality Rate</p><p id="metric-quality-rate" class="metric-value">88.2%</p></article>
+      <article class="metric-card"><p class="metric-label">Quota Completion</p><p id="metric-quota-completion" class="metric-value">76.5%</p></article>
+      <article class="metric-card"><p class="metric-label">Active Lines</p><p id="metric-active-lines" class="metric-value">40</p></article>
+    </section>
+
+    <section class="two-cols">
+      <article class="card">
+        <div class="card-head">
+          <div>
+            <h3>Weekly Throughput</h3>
+            <p class="sub">Last 7 days of operation events</p>
+          </div>
+          <span class="badge badge-brand">Live</span>
+        </div>
+        <div id="weeklyChart" class="chart">
+          <div class="chart-grid"></div>
+          <svg id="weekly-svg" class="line-svg" viewBox="0 0 600 240" preserveAspectRatio="none"></svg>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card-head">
+          <div>
+            <h3>Forecast Projection</h3>
+            <p class="sub">4-week weighted moving average</p>
+          </div>
+          <span class="badge badge-neutral">Predictive</span>
+        </div>
+        <div id="forecastChart" class="chart">
+          <div class="chart-grid"></div>
+          <div id="forecast-bars" class="bars"></div>
+        </div>
+      </article>
+    </section>
+
+    <section id="dashboard-warnings" class="card warnings">
+      <h3>Data Warnings</h3>
+      <ul id="dashboard-warnings-list">
+        <li>Realtime subscription is running in demo mode on this static page.</li>
+        <li>Connect to backend APIs to replace sample metrics.</li>
+      </ul>
+    </section>
+
+    <section class="three-cols">
+      <article class="card">
+        <div class="card-head">
+          <div>
+            <h3>Product Stream</h3>
+            <p class="sub">Latest operation records</p>
+          </div>
+          <a href="records.html" class="link">View all</a>
+        </div>
+
+        <div class="table-shell">
+          <table>
+            <thead>
+              <tr>
+                <th>Product Name</th>
+                <th>Weight</th>
+                <th>Defects</th>
+                <th>Operator</th>
+                <th>Time</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="dashboard-product-tbody"></tbody>
+          </table>
+        </div>
+
+        <div class="table-footer">
+          <span id="product-page-info">Page 1</span>
+          <div class="pager">
+            <button type="button" id="product-prev">Previous</button>
+            <button type="button" id="product-next">Next</button>
+          </div>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card-head">
+          <div>
+            <h3>Quota Monitor</h3>
+            <p class="sub">Per-line completion status</p>
+          </div>
+          <span class="badge badge-neutral">Shift</span>
+        </div>
+
+        <div class="table-shell">
+          <table>
+            <thead>
+              <tr>
+                <th>Line</th>
+                <th>Shift</th>
+                <th>RQ</th>
+                <th>AQ</th>
+                <th>Done</th>
+              </tr>
+            </thead>
+            <tbody id="dashboard-quota-tbody"></tbody>
+          </table>
+        </div>
+
+        <div class="table-footer">
+          <span id="quota-page-info">Page 1</span>
+          <div class="pager">
+            <button type="button" id="quota-prev">Previous</button>
+            <button type="button" id="quota-next">Next</button>
+          </div>
+        </div>
+      </article>
+    </section>
+  </main>
+
+  <script>
+    const dashboardData = {
+      weekly: { labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'], data: [14, 18, 16, 22, 24, 20, 19] },
+      forecast: { labels: ['Wk 13', 'Wk 14', 'Wk 15', 'Wk 16'], data: [20, 22, 24, 23] },
+      products: [
+        { product_name: 'CDO CRISPY BURGER 228g', weight_reading: 227.65, defect_weight: false, defect_packaging: false, operator_name: 'L. Cruz', timestamp: '2026-03-24 08:05', rejected: false },
+        { product_name: 'CDO CRISPY BURGER 228g', weight_reading: 228.35, defect_weight: false, defect_packaging: false, operator_name: 'A. Santos', timestamp: '2026-03-24 08:10', rejected: false },
+        { product_name: 'CDO CRISPY BURGER 228g', weight_reading: 229.05, defect_weight: true, defect_packaging: false, operator_name: 'M. Dela', timestamp: '2026-03-24 08:15', rejected: true },
+        { product_name: 'CDO CRISPY BURGER 228g', weight_reading: 227.30, defect_weight: false, defect_packaging: false, operator_name: 'L. Cruz', timestamp: '2026-03-24 08:20', rejected: false }
+      ],
+      quota: [
+        { line: 'Line 1', shift: 'A', rq: 120, aq: 120, done: true },
+        { line: 'Line 2', shift: 'B', rq: 120, aq: 115, done: false },
+        { line: 'Line 3', shift: 'A', rq: 120, aq: 120, done: true },
+        { line: 'Line 4', shift: 'B', rq: 120, aq: 118, done: false }
+      ]
+    };
+
+    function drawWeeklyLineChart() {
+      const svg = document.getElementById('weekly-svg');
+      const values = dashboardData.weekly.data;
+      const max = Math.max(...values, 1);
+      const width = 600;
+      const height = 240;
+      const padX = 30;
+      const padY = 20;
+      const stepX = (width - padX * 2) / (values.length - 1);
+
+      const points = values.map((v, i) => {
+        const x = padX + i * stepX;
+        const y = height - padY - ((v / max) * (height - padY * 2));
+        return `${x},${y}`;
+      }).join(' ');
+
+      const pathPoints = values.map((v, i) => {
+        const x = padX + i * stepX;
+        const y = height - padY - ((v / max) * (height - padY * 2));
+        return `${i === 0 ? 'M' : 'L'} ${x} ${y}`;
+      }).join(' ');
+
+      svg.innerHTML = `
+        <polyline fill="rgba(239, 68, 68, 0.12)" stroke="none" points="${points} ${width - padX},${height - padY} ${padX},${height - padY}" />
+        <path d="${pathPoints}" fill="none" stroke="#ef4444" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"></path>
+        ${values.map((v, i) => {
+          const x = padX + i * stepX;
+          const y = height - padY - ((v / max) * (height - padY * 2));
+          return `<circle cx="${x}" cy="${y}" r="4" fill="#fca5a5"/>`;
+        }).join('')}
+      `;
+    }
+
+    function drawForecastBars() {
+      const container = document.getElementById('forecast-bars');
+      const values = dashboardData.forecast.data;
+      const labels = dashboardData.forecast.labels;
+      const max = Math.max(...values, 1);
+
+      container.innerHTML = values.map((value, i) => {
+        const h = Math.max(8, Math.round((value / max) * 190));
+        return `
+          <div class="bar-wrap">
+            <div class="bar" style="height:${h}px" title="${value}"></div>
+            <div class="bar-label">${labels[i]}</div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function renderProductTable() {
+      const tbody = document.getElementById('dashboard-product-tbody');
+      tbody.innerHTML = dashboardData.products.map((row) => {
+        const defectText = `${row.defect_weight ? 'W' : '-'} / ${row.defect_packaging ? 'P' : '-'}`;
+        const status = row.rejected ? '<span class="status-bad">Rejected</span>' : '<span class="status-ok">Accepted</span>';
+        return `
+          <tr>
+            <td>${row.product_name}</td>
+            <td>${row.weight_reading}</td>
+            <td>${defectText}</td>
+            <td>${row.operator_name}</td>
+            <td>${row.timestamp}</td>
+            <td>${status}</td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function renderQuotaTable() {
+      const tbody = document.getElementById('dashboard-quota-tbody');
+      tbody.innerHTML = dashboardData.quota.map((row) => {
+        return `
+          <tr>
+            <td>${row.line}</td>
+            <td>${row.shift}</td>
+            <td>${row.rq}</td>
+            <td>${row.aq}</td>
+            <td>${row.done ? '<span class="status-ok">Yes</span>' : '<span class="status-bad">No</span>'}</td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    drawWeeklyLineChart();
+    drawForecastBars();
+    renderProductTable();
+    renderQuotaTable();
+  </script>
+</body>
+</html>

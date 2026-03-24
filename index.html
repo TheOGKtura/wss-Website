@@ -1,0 +1,300 @@
+<!doctype html>
+<html lang="en" class="h-full">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>WSS Login</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --brand-50: #fff1f1;
+      --brand-100: #ffe0e0;
+      --brand-500: #dc2626;
+      --brand-600: #b91c1c;
+      --slate-50: #f8fafc;
+      --slate-100: #f1f5f9;
+      --slate-300: #cbd5e1;
+      --slate-600: #475569;
+      --slate-700: #334155;
+      --slate-900: #0f172a;
+      --slate-950: #020617;
+      --white: #ffffff;
+      --text: #0f172a;
+      --bg: #f1f5f9;
+      --panel: rgba(255, 255, 255, 0.8);
+      --panel-border: rgba(255, 255, 255, 0.6);
+      --notice-bg: #fefce8;
+      --notice-border: #fcd34d;
+      --notice-text: #92400e;
+      --error-bg: #fef2f2;
+      --error-border: #fca5a5;
+      --error-text: #b91c1c;
+      --ring: rgba(220, 38, 38, 0.25);
+    }
+
+    html.dark {
+      --text: #f1f5f9;
+      --bg: #020617;
+      --panel: rgba(15, 23, 42, 0.75);
+      --panel-border: rgba(255, 255, 255, 0.1);
+      --slate-600: #cbd5e1;
+      --slate-700: #334155;
+      --notice-bg: rgba(146, 64, 14, 0.35);
+      --notice-border: rgba(120, 53, 15, 0.65);
+      --notice-text: #fde68a;
+      --error-bg: rgba(127, 29, 29, 0.3);
+      --error-border: rgba(127, 29, 29, 0.65);
+      --error-text: #fecaca;
+      --ring: rgba(185, 28, 28, 0.35);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Sora", "Segoe UI", sans-serif;
+      color: var(--text);
+      background: var(--bg);
+    }
+
+    .main {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      overflow: hidden;
+    }
+
+    .bg-blur {
+      pointer-events: none;
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at top left, rgba(220, 38, 38, 0.2), transparent 45%),
+        radial-gradient(circle at bottom right, rgba(248, 113, 113, 0.2), transparent 45%);
+    }
+
+    .card {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 460px;
+      border-radius: 24px;
+      border: 1px solid var(--panel-border);
+      background: var(--panel);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 25px 60px rgba(2, 6, 23, 0.35);
+      padding: 32px;
+    }
+
+    .eyebrow {
+      margin: 0;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.3em;
+      color: var(--brand-600);
+      font-weight: 600;
+    }
+
+    html.dark .eyebrow {
+      color: #fecaca;
+    }
+
+    h1 {
+      margin: 12px 0 0;
+      font-size: 30px;
+      line-height: 1.2;
+      font-weight: 600;
+    }
+
+    .subtitle {
+      margin: 10px 0 0;
+      font-size: 14px;
+      color: var(--slate-600);
+    }
+
+    .alert {
+      margin-top: 16px;
+      border-radius: 12px;
+      border: 1px solid;
+      padding: 12px 14px;
+      font-size: 14px;
+      line-height: 1.4;
+    }
+
+    .alert.notice {
+      border-color: var(--notice-border);
+      background: var(--notice-bg);
+      color: var(--notice-text);
+    }
+
+    .alert.error {
+      border-color: var(--error-border);
+      background: var(--error-bg);
+      color: var(--error-text);
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .form {
+      margin-top: 24px;
+      display: grid;
+      gap: 14px;
+    }
+
+    .field {
+      display: grid;
+      gap: 8px;
+    }
+
+    .field label {
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .field input {
+      width: 100%;
+      border: 1px solid var(--slate-300);
+      border-radius: 12px;
+      background: var(--white);
+      color: var(--slate-900);
+      padding: 11px 12px;
+      font-size: 14px;
+      outline: none;
+      transition: border-color .15s ease, box-shadow .15s ease;
+    }
+
+    html.dark .field input {
+      background: #020617;
+      color: #f8fafc;
+      border-color: var(--slate-700);
+    }
+
+    .field input:focus {
+      border-color: var(--brand-500);
+      box-shadow: 0 0 0 3px var(--ring);
+    }
+
+    .submit {
+      margin-top: 4px;
+      width: 100%;
+      border: none;
+      border-radius: 12px;
+      background: var(--brand-500);
+      color: #fff;
+      padding: 11px 14px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background-color .15s ease;
+    }
+
+    .submit:hover {
+      background: var(--brand-600);
+    }
+
+    .helper-row {
+      margin-top: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      color: var(--slate-600);
+      font-size: 12px;
+    }
+
+    .theme-btn {
+      border: 1px solid var(--slate-300);
+      background: transparent;
+      color: inherit;
+      border-radius: 999px;
+      font-size: 12px;
+      padding: 6px 10px;
+      cursor: pointer;
+    }
+
+    html.dark .theme-btn {
+      border-color: var(--slate-700);
+    }
+  </style>
+  <script>
+    (() => {
+      const stored = localStorage.getItem('theme');
+      const isDark = stored ? stored === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
+      document.documentElement.classList.toggle('dark', isDark);
+    })();
+  </script>
+</head>
+<body>
+  <main class="main">
+    <div class="bg-blur"></div>
+
+    <section class="card">
+      <p class="eyebrow">WSS Thesis</p>
+      <h1>Realtime Production Login</h1>
+      <p class="subtitle">Sign in with your Supabase account.</p>
+
+      <div id="notice" class="alert notice hidden">Your session expired. Please sign in again.</div>
+      <div id="error" class="alert error hidden">Login failed.</div>
+
+      <form class="form" action="#" method="post" onsubmit="event.preventDefault(); handleLogin();">
+        <div class="field">
+          <label for="email">Email</label>
+          <input id="email" name="email" type="email" required>
+        </div>
+
+        <div class="field">
+          <label for="password">Password</label>
+          <input id="password" name="password" type="password" required>
+        </div>
+
+        <button type="submit" class="submit">Sign in</button>
+      </form>
+
+      <div class="helper-row">
+        <span>Static HTML demo page</span>
+        <button type="button" id="toggleTheme" class="theme-btn">Toggle theme</button>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    function handleLogin() {
+      const emailInput = document.getElementById('email');
+      const passwordInput = document.getElementById('password');
+      const error = document.getElementById('error');
+      error.classList.add('hidden');
+
+      if (!emailInput?.value || !passwordInput?.value) {
+        error.textContent = 'Enter email and password to continue.';
+        error.classList.remove('hidden');
+        return;
+      }
+
+      // Static flow: route to dashboard page.
+      window.location.href = 'dashboard.html';
+    }
+
+    const toggleBtn = document.getElementById('toggleTheme');
+    toggleBtn?.addEventListener('click', () => {
+      const nextDark = !document.documentElement.classList.contains('dark');
+      document.documentElement.classList.toggle('dark', nextDark);
+      localStorage.setItem('theme', nextDark ? 'dark' : 'light');
+    });
+
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('reason') === 'expired') {
+      document.getElementById('notice')?.classList.remove('hidden');
+    }
+  </script>
+</body>
+</html>
