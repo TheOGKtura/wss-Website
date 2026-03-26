@@ -2,15 +2,16 @@
   "name": "WSS-Thesis",
   "version": "0.0.1",
   "description": "A simple Node.js app",
-  "main": "src/server.js",
+  "main": "server.js",
   "scripts": {
-    "start": "node src/server.js"
+    "start": "node server.js"
   },
   "author": "University of the East-Caloocan Thesis Group 5",
   "license": "ISC",
   "dependencies": {
     "@types/node": "^25.4.0",
     "dotenv": "^17.3.1",
+    "ejs": "^5.0.1",
     "express": "^5.2.1",
     "firebase": "^12.10.0"
   },
