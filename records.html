@@ -1,0 +1,508 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Product Records</title>
+  <link rel="stylesheet" href="public/css/app-shell.css">
+  <style>
+    :root {
+      --bg: #060a22;
+      --bg-soft: #0c1438;
+      --card: #0f183f;
+      --line: #2a3564;
+      --text: #e8ecff;
+      --muted: #a8b2da;
+      --brand: #dc2626;
+      --brand-soft: #ef4444;
+      --ok-bg: rgba(5, 150, 105, 0.18);
+      --ok-bd: rgba(16, 185, 129, 0.5);
+      --ok-tx: #d1fae5;
+      --bad-bg: rgba(127, 29, 29, 0.28);
+      --bad-bd: rgba(248, 113, 113, 0.45);
+      --bad-tx: #fecaca;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Segoe UI", "Trebuchet MS", Arial, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(1200px 380px at 15% -20%, rgba(220, 38, 38, 0.26), transparent 52%),
+        radial-gradient(900px 340px at 100% 0%, rgba(59, 130, 246, 0.2), transparent 52%),
+        linear-gradient(165deg, #030617, #090f2c 45%, #091334);
+      padding: 28px 14px;
+    }
+
+    .page {
+      max-width: 1150px;
+      margin: 0 auto;
+    }
+
+    .hero {
+      border: 1px solid var(--line);
+      background: linear-gradient(180deg, #c5161c, #b11318);
+      border-radius: 16px;
+      padding: 16px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      box-shadow: 0 14px 40px rgba(0, 0, 0, 0.35);
+    }
+
+    .hero h1 {
+      margin: 0;
+      font-size: 34px;
+      letter-spacing: 0.01em;
+    }
+
+    .hero p {
+      margin: 2px 0 0;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      color: #ffe4e6;
+      font-weight: 700;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 6px 12px;
+      border: 1px solid;
+      white-space: nowrap;
+    }
+
+    .badge-brand {
+      color: #ffd6d8;
+      border-color: rgba(248, 113, 113, 0.55);
+      background: rgba(127, 29, 29, 0.35);
+    }
+
+    .card {
+      margin-top: 16px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: linear-gradient(180deg, rgba(11, 19, 54, 0.95), rgba(7, 13, 39, 0.95));
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
+      overflow: hidden;
+    }
+
+    .card-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 18px 18px 10px;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .card-head h2 {
+      margin: 0;
+      font-size: 30px;
+      line-height: 1.15;
+    }
+
+    .error {
+      margin: 0 18px 12px;
+      border: 1px solid rgba(251, 146, 60, 0.5);
+      background: rgba(120, 53, 15, 0.35);
+      color: #fde68a;
+      border-radius: 12px;
+      padding: 10px 12px;
+      font-size: 13px;
+    }
+
+    .error.hidden {
+      display: none;
+    }
+
+    .table-wrap {
+      overflow: auto;
+      padding: 0 18px 6px;
+    }
+
+    table {
+      width: 100%;
+      min-width: 960px;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+
+    th, td {
+      padding: 11px 10px;
+      text-align: left;
+      border-bottom: 1px solid rgba(148, 163, 184, 0.28);
+    }
+
+    th {
+      color: #dbe3ff;
+      font-size: 13px;
+      letter-spacing: 0.02em;
+      font-weight: 700;
+    }
+
+    td {
+      color: #f1f5ff;
+    }
+
+    .status-ok {
+      color: var(--ok-tx);
+      border-color: var(--ok-bd);
+      background: var(--ok-bg);
+    }
+
+    .status-bad {
+      color: var(--bad-tx);
+      border-color: var(--bad-bd);
+      background: var(--bad-bg);
+    }
+
+    .show-btn {
+      border: 1px solid var(--line);
+      color: #dce4ff;
+      background: transparent;
+      border-radius: 10px;
+      padding: 6px 12px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: border-color .2s ease, background .2s ease;
+    }
+
+    .show-btn:hover {
+      border-color: #f87171;
+      background: rgba(127, 29, 29, 0.22);
+    }
+
+    .card-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      padding: 12px 18px 16px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .pager {
+      display: flex;
+      gap: 8px;
+    }
+
+    .pager button {
+      border: 1px solid var(--line);
+      color: #e6eaff;
+      background: transparent;
+      border-radius: 10px;
+      padding: 7px 10px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    .pager button:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0, 0, 0, 0.68);
+      padding: 14px;
+      z-index: 100;
+    }
+
+    .modal-box {
+      width: min(980px, 100%);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: linear-gradient(180deg, #0f173d, #0a102f);
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5);
+      padding: 16px;
+    }
+
+    .modal-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .modal-head p {
+      margin: 0;
+      font-size: 11px;
+      color: #fca5a5;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      font-weight: 700;
+    }
+
+    .modal-head h3 {
+      margin: 4px 0 0;
+      font-size: 21px;
+    }
+
+    .close-btn {
+      border: 1px solid var(--line);
+      color: #e4eaff;
+      background: transparent;
+      border-radius: 10px;
+      padding: 7px 10px;
+      font-size: 13px;
+      cursor: pointer;
+    }
+
+    .modal-error {
+      display: none;
+      border: 1px solid rgba(248, 113, 113, 0.55);
+      background: rgba(127, 29, 29, 0.3);
+      color: #fecaca;
+      border-radius: 10px;
+      padding: 9px 11px;
+      margin-bottom: 10px;
+      font-size: 13px;
+    }
+
+    .modal-content {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: rgba(3, 8, 28, 0.55);
+      max-height: 60vh;
+      overflow: auto;
+      padding: 12px;
+      color: #dce4ff;
+      font-size: 14px;
+      line-height: 1.5;
+      white-space: pre-wrap;
+    }
+
+    .modal-tip {
+      margin: 10px 0 0;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    @media (max-width: 760px) {
+      .hero h1 {
+        font-size: 26px;
+      }
+
+      .card-head h2 {
+        font-size: 24px;
+      }
+    }
+  </style>
+</head>
+<body class="with-sidebar">
+  <aside class="app-sidebar">
+    <div class="meta">
+      <p class="brand">WSS Thesis</p>
+      <p class="title">Realtime Production</p>
+    </div>
+
+    <nav class="sidebar-nav" aria-label="Main">
+      <a class="sidebar-link" href="dashboard.html">Dashboard</a>
+      <a class="sidebar-link active" href="records.html">Records</a>
+      <a class="sidebar-link" href="settings.html">Settings</a>
+      <a class="sidebar-link" href="logout.html">Logout</a>
+    </nav>
+
+    <p class="sidebar-foot">Operation history</p>
+  </aside>
+
+  <main class="page">
+    <section class="hero">
+      <div>
+        <p>Realtime Production</p>
+        <h1>Product Records</h1>
+      </div>
+      <span class="badge badge-brand">Realtime</span>
+    </section>
+
+    <section class="card" id="records-root" data-page="1">
+      <div class="card-head">
+        <h2>Recent Operations</h2>
+        <span class="badge badge-brand">Realtime</span>
+      </div>
+
+      <div id="records-error" class="error hidden"></div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Product Name</th>
+              <th>Average</th>
+              <th>Reading</th>
+              <th>Defect Weight</th>
+              <th>Defect Packaging</th>
+              <th>Operator</th>
+              <th>Time</th>
+              <th>Status</th>
+              <th>View</th>
+            </tr>
+          </thead>
+          <tbody id="records-tbody">
+            <tr>
+              <td>CDO CRISPY BURGER 228g</td>
+              <td>228</td>
+              <td>227.65</td>
+              <td>No</td>
+              <td>No</td>
+              <td>L. Cruz</td>
+              <td>2026-03-24 08:05</td>
+              <td><span class="badge status-ok">Accepted</span></td>
+              <td><button class="show-btn open-record-flow" data-operation-id="1">Show Data</button></td>
+            </tr>
+            <tr>
+              <td>CDO CRISPY BURGER 228g</td>
+              <td>228</td>
+              <td>228.35</td>
+              <td>No</td>
+              <td>No</td>
+              <td>A. Santos</td>
+              <td>2026-03-24 08:10</td>
+              <td><span class="badge status-ok">Accepted</span></td>
+              <td><button class="show-btn open-record-flow" data-operation-id="2">Show Data</button></td>
+            </tr>
+            <tr>
+              <td>CDO CRISPY BURGER 228g</td>
+              <td>228</td>
+              <td>229.05</td>
+              <td>Yes</td>
+              <td>No</td>
+              <td>M. Dela</td>
+              <td>2026-03-24 08:15</td>
+              <td><span class="badge status-bad">Rejected</span></td>
+              <td><button class="show-btn open-record-flow" data-operation-id="3">Show Data</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card-footer">
+        <span id="records-page-info">Page 1</span>
+        <div class="pager">
+          <button id="records-prev" disabled>Previous</button>
+          <button id="records-next">Next</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div id="record-flow-modal" class="modal">
+    <div class="modal-box">
+      <div class="modal-head">
+        <div>
+          <p>Data Structure View</p>
+          <h3>Records -> Lines -> Shifts -> Operation</h3>
+        </div>
+        <button type="button" id="close-record-flow-modal" class="close-btn">Close</button>
+      </div>
+
+      <div id="record-flow-error" class="modal-error"></div>
+      <div id="record-flow-content" class="modal-content">Click "Show Data" to preview operation details.</div>
+      <p class="modal-tip">Room for improvement: attach product image per read/scan event.</p>
+    </div>
+  </div>
+
+  <script>
+    (() => {
+      const modal = document.getElementById('record-flow-modal');
+      const closeBtn = document.getElementById('close-record-flow-modal');
+      const content = document.getElementById('record-flow-content');
+
+      const previewById = {
+        1: {
+          record_id: 101,
+          shift: 'Shift A',
+          operation: {
+            id: 1,
+            product_name: 'CDO CRISPY BURGER 228g',
+            average_weight: 228,
+            weight_reading: 227.65,
+            defect_weight: false,
+            defect_packaging: false,
+            operator_name: 'L. Cruz',
+            timestamp: 1773955500000
+          }
+        },
+        2: {
+          record_id: 102,
+          shift: 'Shift A',
+          operation: {
+            id: 2,
+            product_name: 'CDO CRISPY BURGER 228g',
+            average_weight: 228,
+            weight_reading: 228.35,
+            defect_weight: false,
+            defect_packaging: false,
+            operator_name: 'A. Santos',
+            timestamp: 1773955800000
+          }
+        },
+        3: {
+          record_id: 103,
+          shift: 'Shift A',
+          operation: {
+            id: 3,
+            product_name: 'CDO CRISPY BURGER 228g',
+            average_weight: 228,
+            weight_reading: 229.05,
+            defect_weight: true,
+            defect_packaging: false,
+            operator_name: 'M. Dela',
+            timestamp: 1773956100000
+          }
+        }
+      };
+
+      function openModal(operationId) {
+        const payload = previewById[operationId] || { error: 'No preview data available for this item.' };
+        content.textContent = JSON.stringify(payload, null, 2);
+        modal.style.display = 'flex';
+      }
+
+      function closeModal() {
+        modal.style.display = 'none';
+      }
+
+      document.addEventListener('click', (event) => {
+        const target = event.target;
+        if (!(target instanceof Element)) {
+          return;
+        }
+
+        if (target.classList.contains('open-record-flow')) {
+          const operationId = Number(target.getAttribute('data-operation-id') || 0);
+          openModal(operationId);
+        }
+      });
+
+      closeBtn?.addEventListener('click', closeModal);
+      modal?.addEventListener('click', (event) => {
+        if (event.target === modal) {
+          closeModal();
+        }
+      });
+    })();
+  </script>
+</body>
+</html>
