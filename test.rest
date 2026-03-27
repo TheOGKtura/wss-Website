@@ -1,4 +1,3 @@
 ### ADD FRIEND
-POST http://127.0.0.1:3001/add-test
+POST http://127.0.0.1:5000/add-test
 Content-type: application.json
-
