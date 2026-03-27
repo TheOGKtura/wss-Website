@@ -37,7 +37,7 @@ app.post('/add-test', async (req, res) => {
   const res2 = await customers.child(primaryKey).set({
     "firstName": "John Zel",
     "lastName": "Bartolo",
-    "location": "University of the East"
+    "location": "Bulacan"
   });
   
 })
