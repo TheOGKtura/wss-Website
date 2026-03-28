@@ -31,7 +31,7 @@
       <div id="notice" class="alert notice hidden">Your session expired. Please sign in again.</div>
       <div id="error" class="alert error hidden">Login failed.</div>
 
-      <form class="form" action="#" method="post" onsubmit="event.preventDefault();">
+      <form class="form" action="\" method="post" onsubmit="event.preventDefault(); sendPOSTRequest(); resetForm();">
         <div class="field">
           <label for="email">Email</label>
           <input id="email" name="email" type="email" required>
@@ -42,7 +42,7 @@
           <input id="password" name="password" type="password" required>
         </div>
 
-        <button type="submit" class="submit">Sign in</button>
+        <input type="submit" class="submit" value="Sign in"/>
       </form>
 
       <div class="helper-row">
@@ -50,6 +50,8 @@
         <button type="button" id="toggleTheme" class="theme-btn">Toggle theme</button>
       </div>
     </section>
+
+    <script src="js/auth.js"></script>
   </main>
  
   <!--<script>
@@ -69,8 +71,6 @@
       window.location.href = 'dashboard.html';
     }
   </script>-->
-
-  <script src="js/index.js"></script>
 
   <!-- Light/Dark Mode Theme Storing -->
   <script>
