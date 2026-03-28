@@ -7,11 +7,6 @@ POST httpapp.use(express.json());
 app.use(express.urlencoded({ extended: true }));://127.0.0.1:5000/api/login
 Content-type: application/json
 
-{
-    "email": "admin@wss.co",
-    "password": "adminwss123"
-}
-
 ### LOGOUT
 POST http://127.0.0.1:5000/api/logout
 Content-type: application/json

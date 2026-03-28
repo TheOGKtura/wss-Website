@@ -7,7 +7,6 @@
   <link rel="stylesheet" href="css/app-shell.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/dashboard.css"
 </head>
 <body class="with-sidebar">
@@ -17,14 +16,8 @@
       <p class="title">Realtime Production</p>
     </div>
 
-    <nav class="sidebar-nav" aria-label="Main">
-      <a class="sidebar-link active" href="dashboard.html">Dashboard</a>
-      <a class="sidebar-link" href="records.html">Records</a>
-      <a class="sidebar-link" href="settings.html">Settings</a>
-      <a class="sidebar-link" href="logout.html">Logout</a>
-    </nav>
+    <%- include("../partials/myView") %>
 
-    <p class="sidebar-foot">Live monitoring module</p>
   </aside>
 
   <main class="shell">
@@ -41,7 +34,7 @@
         </div>
       </div>
     </section>
-
+    <!-- SAMPLE DATA -->
     <section class="metrics">
       <article class="metric-card"><p class="metric-label">Today Ops</p><p id="metric-today-operations" class="metric-value">24</p></article>
       <article class="metric-card"><p class="metric-label">Total Ops (Loaded)</p><p id="metric-total-operations" class="metric-value">161</p></article>
@@ -49,7 +42,7 @@
       <article class="metric-card"><p class="metric-label">Quota Completion</p><p id="metric-quota-completion" class="metric-value">76.5%</p></article>
       <article class="metric-card"><p class="metric-label">Active Lines</p><p id="metric-active-lines" class="metric-value">40</p></article>
     </section>
-
+    
     <section class="two-cols">
       <article class="card">
         <div class="card-head">

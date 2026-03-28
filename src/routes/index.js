@@ -24,14 +24,17 @@ router.get('/', (req, res) => {
 
 router.get('/dashboard', (req, res) => {
   res.render('./pages/dashboard');
+
 });
 
 router.get('/records', (req, res) => {
   res.render('./pages/records');
+
 });
 
 router.get('/settings', (req, res) => {
   res.render('./pages/settings');
+
 });
 
 router.get('/logout', (req, res) => {
@@ -51,6 +54,7 @@ router.post('/api/login', async (req, res) => {
             password: "Password is required",
         });
     }
+
     signInWithEmailAndPassword(auth, email, password)
         .then((userCredential) => { 
         const idToken = userCredential._tokenResponse.idToken
@@ -66,14 +70,12 @@ router.post('/api/login', async (req, res) => {
         .catch((error) => {
             console.error(error);
             const errorMessage = error.message || "An error occurred while logging in";
-            res.status(500).json({ error: errorMessage });
-            res.redirect('/login?error=invalid');
         });
         //console.log(res.cookie('access_token'));
 });
 
 router.post('/api/logout', (req, res) => {
-    console.log(res.cookie('access_token'));
+    //console.log(res.cookie('access_token'));
     signOut(auth)
     .then(() => {
         res.clearCookie('access_token');
