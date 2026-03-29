@@ -29,7 +29,8 @@ router.get('/dashboard', (req, res) => {
 
 router.get('/records', (req, res) => {
   res.render('./pages/records');
-
+  const ref = fb.database.ref('events').get();
+  
 });
 
 router.get('/settings', (req, res) => {
@@ -71,8 +72,9 @@ router.post('/api/login', async (req, res) => {
             console.error(error);
             const errorMessage = error.message || "An error occurred while logging in";
         });
-        //console.log(res.cookie('access_token'));
+        
 });
+
 
 router.post('/api/logout', (req, res) => {
     //console.log(res.cookie('access_token'));

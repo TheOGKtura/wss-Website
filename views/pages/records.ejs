@@ -18,7 +18,7 @@
       <p class="title">Realtime Production</p>
     </div>
 
-    <%- include("../partials/myView") %>
+    <%- include("../partials/myView") %> 
     
   </aside>
   <!-- SAMPLE DATA -->
@@ -31,92 +31,7 @@
       <span class="badge badge-brand">Realtime</span>
     </section>
 
-    <section class="card" id="records-root" data-page="1">
-      <div class="card-head">
-        <h2>Recent Operations</h2>
-        <span class="badge badge-brand">Realtime</span>
-      </div>
-
-      <div id="records-error" class="error hidden"></div>
-
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>Product Name</th>
-              <th>Average</th>
-              <th>Reading</th>
-              <th>Defect Weight</th>
-              <th>Defect Packaging</th>
-              <th>Operator</th>
-              <th>Time</th>
-              <th>Status</th>
-              <th>View</th>
-            </tr>
-          </thead>
-          <tbody id="records-tbody">
-            <tr>
-              <td>CDO CRISPY BURGER 228g</td>
-              <td>228</td>
-              <td>227.65</td>
-              <td>No</td>
-              <td>No</td>
-              <td>L. Cruz</td>
-              <td>2026-03-24 08:05</td>
-              <td><span class="badge status-ok">Accepted</span></td>
-              <td><button class="show-btn open-record-flow" data-operation-id="1">Show Data</button></td>
-            </tr>
-            <tr>
-              <td>CDO CRISPY BURGER 228g</td>
-              <td>228</td>
-              <td>228.35</td>
-              <td>No</td>
-              <td>No</td>
-              <td>A. Santos</td>
-              <td>2026-03-24 08:10</td>
-              <td><span class="badge status-ok">Accepted</span></td>
-              <td><button class="show-btn open-record-flow" data-operation-id="2">Show Data</button></td>
-            </tr>
-            <tr>
-              <td>CDO CRISPY BURGER 228g</td>
-              <td>228</td>
-              <td>229.05</td>
-              <td>Yes</td>
-              <td>No</td>
-              <td>M. Dela</td>
-              <td>2026-03-24 08:15</td>
-              <td><span class="badge status-bad">Rejected</span></td>
-              <td><button class="show-btn open-record-flow" data-operation-id="3">Show Data</button></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
-      <div class="card-footer">
-        <span id="records-page-info">Page 1</span>
-        <div class="pager">
-          <button id="records-prev" disabled>Previous</button>
-          <button id="records-next">Next</button>
-        </div>
-      </div>
-    </section>
-  </main>
-
-  <div id="record-flow-modal" class="modal">
-    <div class="modal-box">
-      <div class="modal-head">
-        <div>
-          <p>Data Structure View</p>
-          <h3>Records -> Lines -> Shifts -> Operation</h3>
-        </div>
-        <button type="button" id="close-record-flow-modal" class="close-btn">Close</button>
-      </div>
-
-      <div id="record-flow-error" class="modal-error"></div>
-      <div id="record-flow-content" class="modal-content">Click "Show Data" to preview operation details.</div>
-      <p class="modal-tip">Room for improvement: attach product image per read/scan event.</p>
-    </div>
-  </div>
+    <%- include("../partials/showRecords") %>
 
   <script>
     (() => {
