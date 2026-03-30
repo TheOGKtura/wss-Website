@@ -11,6 +11,19 @@ const {
 
  const auth = getAuth();
 
+async function getChild(ref) {
+    ref.child('-Oomt69XVMJ53L1k65rv').get().then((snapshot) => {
+  if (snapshot.exists()) {
+    var getData = snapshot.val();
+    return getData.role;
+  } else {
+    console.log("No data available");
+  }
+}).catch((error) => {
+  console.error(error);
+});
+}
+
 /*const firebaseAuthController = require('../controllers/authController');
 
 router.post('/api/login', firebaseAuthController.loginUser);
@@ -27,9 +40,12 @@ router.get('/dashboard', (req, res) => {
 
 });
 
-router.get('/records', (req, res) => {
-  res.render('./pages/records');
-  const ref = fb.database.ref('events').get();
+router.get('/records', async (req, res) => {
+  const events = fb.database.ref('devices/wss/events');
+  const trying = getChild(events);
+  res.render('./pages/records', {pas: trying});
+  
+  const standard = fb.database.ref('product-standard');
   
 });
 
