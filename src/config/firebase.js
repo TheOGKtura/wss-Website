@@ -7,16 +7,31 @@ const firebaseConfig = {
   projectId: process.env.FIREBASE_PROJECT_ID,
   storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
   messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
-  appId: process.env.FIREBASE_APP_ID
+  appId: process.env.FIREBASE_APP_ID,
+  databaseURL: process.env.FIREBASE_DATABASE_URL
 };
 
 firebase.initializeApp(firebaseConfig);
 
 const {
-    getAuth,
-    signInWithEmailAndPassword,
-    signOut
+  getAuth,
+  signInWithEmailAndPassword,
+  signOut
 } = require('firebase/auth');
+
+const {
+  getDatabase,
+  ref,
+  get,
+  child,
+  increment,
+  push,
+  set,
+  update,
+  runTransaction,
+  onChildAdded,
+  onValue
+} = require('firebase/database');
 
 // Firebase Admin
 const admin = require('firebase-admin');
@@ -27,15 +42,28 @@ const { dot } = require('node:test/reporters');
 
 initializeAdminApp({
   credential: admin.credential.cert(serviceAccount),
-  databaseURL: "https://wssthesis-default-rtdb.asia-southeast1.firebasedatabase.app"
+  databaseURL: process.env.FIREBASE_DATABASE_URL
 });
   
-const database = admin.database();
+const adminDatabase = admin.database();
 
 module.exports = { 
   getAuth,
   signInWithEmailAndPassword,
   signOut,
-  database, 
+
+  getDatabase,
+  ref,
+  get,
+  child,
+  increment,
+  push,
+  set,
+  update,
+  runTransaction,
+  onChildAdded,
+  onValue,
+  
+  adminDatabase, 
   admin 
 };

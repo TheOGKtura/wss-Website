@@ -2,33 +2,30 @@ const express = require('express');
 const { join } = require('node:path');
 const router = express.Router();
 const fb = require('../config/firebase');
+const { DatabaseSync } = require('node:sqlite');
 
 const { 
   getAuth, 
   signInWithEmailAndPassword, 
-  signOut
- } = require('../config/firebase');
+  signOut,
+
+  getDatabase,
+  ref,
+  get,
+  child,
+  increment,
+  push,
+  set,
+  update,
+  runTransaction,
+  onChildAdded,
+  onValue
+
+ } = fb;
 
  const auth = getAuth();
-
-async function getChild(ref) {
-    ref.child('-Oomt69XVMJ53L1k65rv').get().then((snapshot) => {
-  if (snapshot.exists()) {
-    var getData = snapshot.val();
-    return getData.role;
-  } else {
-    console.log("No data available");
-  }
-}).catch((error) => {
-  console.error(error);
-});
-}
-
-/*const firebaseAuthController = require('../controllers/authController');
-
-router.post('/api/login', firebaseAuthController.loginUser);
-router.post('/api/logout', firebaseAuthController.logoutUser);
-*/
+ const db = getDatabase();
+  // use of database in 'firebase-admin' is different from 'firebase'
 
 // LOGIN PAGE
 router.get('/', (req, res) => {
@@ -41,13 +38,24 @@ router.get('/dashboard', (req, res) => {
 });
 
 router.get('/records', async (req, res) => {
-  const events = fb.database.ref('devices/wss/events');
-  const trying = getChild(events);
-  res.render('./pages/records', {pas: trying});
+  res.render('./pages/records');
   
-  const standard = fb.database.ref('product-standard');
-  
-});
+}); 
+  /*get(child(db, `/devices/wss/events/-OosN2yHnRJNVbSurHwy`)).then((snapshot) => {
+  if (snapshot.exists()) {
+    // console.log(snapshot.val());
+    var passOn = snapshot.val();
+  } else {
+    console.log("NO DATAA");
+    console.log(snapshot.val());
+  }
+  res.render('./pages/records', { data : passOn } );
+ }).catch((error) => {
+  console.error(error);
+  res.render('./pages/404');
+ });
+   // res.render('./pages/records', [data]);
+});*/
 
 router.get('/settings', (req, res) => {
   res.render('./pages/settings');

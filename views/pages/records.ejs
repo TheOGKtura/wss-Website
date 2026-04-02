@@ -28,16 +28,16 @@
         <p>Realtime Production</p>
         <h1>Product Records</h1>
       </div>
-      <span class="badge badge-brand">Realtime</span>
+      <span class="badge badge-brand">WSS</span>
     </section>
 
     <link rel="stylesheet" href="css/app-shell.css">
-    <script src="js/show.js"></script>
 
     <section class="card" id="records-root" data-page="1">
           <div class="card-head">
             <h2>Recent Operations</h2>
-            <span class="badge badge-brand">Realtime</span>
+            
+            <button></button>
           </div>
 
           <div id="records-error" class="error hidden"></div>
@@ -46,35 +46,27 @@
             <table>
               <thead>
                 <tr>
+                  <th>No.</th>
                   <th>Product Name</th>
                   <th>Standard</th>
                   <th>Reading</th>
+                  <th>Difference</th>
                   <th>Production Shift</th>
                   <th>Production Line</th>
                   <th>Operator</th>
-                  <th>Time</th>
+                  <th>Date and Time</th>
                   <th>Status</th>
-                  <th>View</th>
                 </tr>
               </thead>
               <tbody id="records-tbody">
                 <tr>
 
                 </tr>
-                <tr>
-                  <td><%=   pas %></td>
-                  <td>228</td>
-                  <td>227.65</td>
-                  <td>No</td>
-                  <td>No</td>
-                  <td>L. Cruz</td>
-                  <td>2026-03-24 08:05</td>
-                  <td><span class="badge status-ok">Accepted</span></td>
-                  <td><button class="show-btn open-record-flow" data-operation-id="1">Show Data</button></td>
-                </tr>
               </tbody>
             </table>
           </div>
+
+          <script type="module" src="js/records.js"></script>
 
           <div class="card-footer">
             <span id="records-page-info">Page 1</span>

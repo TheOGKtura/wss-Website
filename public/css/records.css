@@ -142,11 +142,13 @@
       color: #dbe3ff;
       font-size: 13px;
       letter-spacing: 0.02em;
+      text-align: center;
       font-weight: 700;
     }
 
     td {
       color: #f1f5ff;
+      text-align: center;
     }
 
     .status-ok {
