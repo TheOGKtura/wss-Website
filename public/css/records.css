@@ -151,6 +151,10 @@
       text-align: center;
     }
 
+    .pagination-select {
+      text-align: center;
+    }
+
     .status-ok {
       color: var(--ok-tx);
       border-color: var(--ok-bd);

@@ -23,15 +23,14 @@ import {
 
 const db = getDatabase();
 
-let sno = 1;
-let recordList = [];
+let quotaList = [];
 let result = [];
-let paginationValue = 20;
+let paginationValue;
 let currentRecordCount = paginationValue
 let page = 0;
 let pagesCount;
+let lastKey;
 
-var lastKey;
 let tbody = document.getElementById("records-tbody");
 const pageElememt = document.getElementById("records-page-info");
 const prevContainer = document.getElementById("records-prev-container");
@@ -45,28 +44,32 @@ disablePreviousButton(true)
 disableNextButton()
 
 // DATABASE
-const SelectAllDataOnce = () => {
-    "use strict"
-    const dbRef = ref(db);
-    get(child(dbRef, '/devices/wss/records')).then((snapshot) => {
-        recordList = [];
-        snapshot.forEach(record => {
-        recordList.push(record.val());
+const SelectAllDataRealtime = () => {
+    const dbRef = ref(db, '/devices/wss/quotas');
+    onValue(dbRef, (snapshot) => {
+        quotaList = [];
+        snapshot.forEach(quota => {
+        quotaList.push(quota.val());
+        lastKey = quota.key;
+        if (lastKey > 20) {
+            paginationValue = 20;
+        } else{
+            paginationValue = lastKey;
+        }
         });
-        AddAllRecords();
-
+        AddAllQuotas();
     })
 }
 
-const SelectAllDataRealtime = () => {
+const SelectAllDataRealtimeRecords = () => {
     const dbRef = ref(db, '/devices/wss/records');
     onValue(dbRef, (snapshot) => {
         recordList = [];
         snapshot.forEach(record => {
-        recordList.push(record.val());
+        recordList.push(reocrd.val());
         lastKey = record.key;
         });
-        AddAllRecords();
+        AddAllQuotas();
     })
 }
 
@@ -110,7 +113,7 @@ prevContainer.addEventListener('click', (event) => {
     SelectAllDataRealtime();
 });
 
-const AddSingleRecord = (product_name, standard, reading, production_shift, production_line, operator, time, accepted) => {
+const AddSingleQuota = (product_name, quota, totalOps = 0, production_shift, production_line, time, status) => {
     let trow = document.createElement('tr');
     let td1 = document.createElement('td');
     let td2 = document.createElement('td');
@@ -119,42 +122,40 @@ const AddSingleRecord = (product_name, standard, reading, production_shift, prod
     let td5 = document.createElement('td');
     let td6 = document.createElement('td');
     let td7 = document.createElement('td');
-    let td8 = document.createElement('td');
-    let td9 = document.createElement('td');
     let totalCount = document.getElementById('total-count');
 
     const dateObject = new Date(time * 1000);
-    var difference = Math.abs(standard.toFixed(2) - reading.toFixed(2)).toFixed(2);
 
     td1.innerHTML = product_name;
-    td2.innerHTML = `${standard.toFixed(2)}g`;
-    td3.innerHTML = `${reading.toFixed(2)}g`;
-    td4.innerHTML = `±${difference}g`
-    td5.innerHTML = production_shift;
-    td6.innerHTML = production_line;
-    td7.innerHTML = operator;
-    td8.innerHTML = `${dateObject.toLocaleDateString()} ${dateObject.toLocaleTimeString()}`;
+    td2.innerHTML = quota;
+    td3.innerHTML = totalOps;
+    td4.innerHTML = production_shift;
+    td5.innerHTML = production_line;
+    td6.innerHTML = `${dateObject.toLocaleDateString()}`;
 
     totalCount.innerHTML = lastKey;
+    recordsCount.innerHTML = 1;
 
-    if (accepted == true) {
-        td9.innerHTML = `<span class=\"badge status-ok\"> Accepted </span>`
+    if (status == 2) {
+        td7.innerHTML = `<span class=\"badge status-ok\"> Completed </span>`
+    } else if (status == 1) {
+        td7.innerHTML = `<span class=\"badge status-bad\"> In Progress </span>`
     } else {
-        td9.innerHTML = `<span class=\"badge status-bad\"> Rejected </span>`
+        td7.innerHTML = `<span class=\"badge status-bad\"> Incomplete </span>`
     }
 
-    trow.append(td1,td2,td3,td4,td5,td6,td7,td8,td9);
+    trow.append(td1,td2,td3,td4,td5,td6,td7);
     tbody.append(trow);
 }
 
-const AddAllRecords = () => {
+const AddAllQuotas = () => {
     tbody.innerHTML = "";
     result = [];
-    
-    recordList.reverse();
+    quotaList.reverse();
 
-    for (let i = 0; i < recordList.length; i += paginationValue) {
-        const chunk = recordList.slice(i, i + paginationValue);
+    console.log(paginationValue);
+    for (let i = 0; i < quotaList.length; i += paginationValue) {
+        const chunk = quotaList.slice(i, i + paginationValue);
         result.push(chunk);
     }
 
@@ -168,12 +169,12 @@ const AddAllRecords = () => {
     }
 
     for (let i = 0; i < result[page].length; i++) {
-        let record = result[page][i];
-        AddSingleRecord(record.product_name, record.standard, record.reading, record.production_shift, record.production_line, record.operator, record.time, record.accepted);
+        let quota = result[page][i];
+        AddSingleQuota(quota.product_name, quota.quota, quota.totalOps, quota.production_shift, quota.production_line, quota.time, quota.status);
     }
 
-    /*recordList.forEach(record => {
-        AddSingleRecord(record.product_name, record.standard, record.reading, record.production_shift, record.production_line, record.operator, record.time, record.accepted);
+    /*quotaList.forEach(quota => {
+        AddSingleRecord(quota.product_name, quota.standard, quota.reading, quota.production_shift, quota.production_line, quota.operator, quota.time, quota.accepted);
     })*/
     //console.log(result);
 }

@@ -25,22 +25,22 @@
       <div class="header">
         <div>
           <p class="eyebrow">Production Command Center</p>
-          <h1>Realtime line performance and forecast intelligence</h1>
+          <h1>Realtime line performance</h1>
           <p class="sub">Live metrics from operations and lines, refreshed automatically when changes arrive.</p>
         </div>
         <div style="display:flex; gap:8px;">
-          <span class="badge badge-success">Realtime Active</span>
-          <span class="badge badge-neutral">Weighted MA</span>
+          <!--<span class="badge badge-success">Realtime Active</span>
+          <span class="badge badge-neutral">Weighted MA</span>-->
         </div>
       </div>
     </section>
     <!-- SAMPLE DATA -->
     <section class="metrics">
-      <article class="metric-card"><p class="metric-label">Today Ops</p><p id="metric-today-operations" class="metric-value">24</p></article>
-      <article class="metric-card"><p class="metric-label">Total Ops (Loaded)</p><p id="metric-total-operations" class="metric-value">161</p></article>
-      <article class="metric-card"><p class="metric-label">Quality Rate</p><p id="metric-quality-rate" class="metric-value">88.2%</p></article>
-      <article class="metric-card"><p class="metric-label">Quota Completion</p><p id="metric-quota-completion" class="metric-value">76.5%</p></article>
-      <article class="metric-card"><p class="metric-label">Active Lines</p><p id="metric-active-lines" class="metric-value">40</p></article>
+      <article class="metric-card"><p class="metric-label">Today Ops</p><p id="metric-today-operations" class="metric-value"><label id="today-ops"></label></p></article>
+      <article class="metric-card"><p class="metric-label">Today Quota</p><p id="metric-today-quota" class="metric-value"><label id="today-quota"></label></p></article>
+      <article class="metric-card"><p class="metric-label">Accepted Ops</p><p id="metric-quota-completion" class="metric-value"><label id="quota-completion"></label></p></article>
+      <article class="metric-card"><p class="metric-label">Error Ratio</p><p id="metric-quality-rate" class="metric-value"><label id="error-ratio"></label></p></article>
+      <article class="metric-card"><p class="metric-label">Current Shift</p><p id="metric-current-shift" class="metric-value"><label id="current-shift"></label></p></article>
     </section>
     
     <section class="two-cols">
@@ -50,7 +50,7 @@
             <h3>Weekly Throughput</h3>
             <p class="sub">Last 7 days of operation events</p>
           </div>
-          <span class="badge badge-brand">Live</span>
+          <span class="badge badge-brand"></span>
         </div>
         <div id="weeklyChart" class="chart">
           <div class="chart-grid"></div>
@@ -64,7 +64,7 @@
             <h3>Forecast Projection</h3>
             <p class="sub">4-week weighted moving average</p>
           </div>
-          <span class="badge badge-neutral">Predictive</span>
+          <span class="badge badge-neutral"></span>
         </div>
         <div id="forecastChart" class="chart">
           <div class="chart-grid"></div>
@@ -90,33 +90,30 @@
             <h3>Product Stream</h3>
             <p class="sub">Latest operation records</p>
           </div>
-          <a href="records.html" class="link">View all</a>
+          <a href="/records" class="link">View all</a>
         </div>
 
         <div class="table-shell">
           <table>
             <thead>
               <tr>
-                <th>Product Name</th>
-                <th>Weight</th>
-                <th>Defects</th>
-                <th>Operator</th>
+                <th>Name</th>
+                <th>Standard</th>
+                <th>Reading</th>
+                <th>Difference</th>
+                <th>Line</th>
                 <th>Time</th>
                 <th>Status</th>
               </tr>
             </thead>
             <tbody id="dashboard-product-tbody"></tbody>
+
           </table>
         </div>
 
-        <div class="table-footer">
-          <span id="product-page-info">Page 1</span>
-          <div class="pager">
-            <button type="button" id="product-prev">Previous</button>
-            <button type="button" id="product-next">Next</button>
-          </div>
-        </div>
       </article>
+
+      <script type="module" src="js/dashboard-product.js"></script>
 
       <article class="card">
         <div class="card-head">
@@ -131,30 +128,26 @@
           <table>
             <thead>
               <tr>
-                <th>Line</th>
+                <th>Name</th>
+                <th>Quota</th>
+                <th>Total Ops</th>
                 <th>Shift</th>
-                <th>RQ</th>
-                <th>AQ</th>
-                <th>Done</th>
+                <th>Line</th>
+                <th>Date</th>
+                <th>Status</th>
               </tr>
             </thead>
             <tbody id="dashboard-quota-tbody"></tbody>
           </table>
         </div>
 
-        <div class="table-footer">
-          <span id="quota-page-info">Page 1</span>
-          <div class="pager">
-            <button type="button" id="quota-prev">Previous</button>
-            <button type="button" id="quota-next">Next</button>
-          </div>
-        </div>
       </article>
+
+      <script type="module" src="js/dashboard-quota.js"></script>
+
     </section>
   </main>
 
-  <script type="module" src="js/dashboard.js"></script>
-  <!--
   <script>
     const dashboardData = {
       weekly: { labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'], data: [14, 18, 16, 22, 24, 20, 19] },
@@ -223,43 +216,8 @@
       }).join('');
     }
 
-    function renderProductTable() {
-      const tbody = document.getElementById('dashboard-product-tbody');
-      tbody.innerHTML = dashboardData.products.map((row) => {
-        const defectText = `${row.defect_weight ? 'W' : '-'} / ${row.defect_packaging ? 'P' : '-'}`;
-        const status = row.rejected ? '<span class="status-bad">Rejected</span>' : '<span class="status-ok">Accepted</span>';
-        return `
-          <tr>
-            <td>${row.product_name}</td>
-            <td>${row.weight_reading}</td>
-            <td>${defectText}</td>
-            <td>${row.operator_name}</td>
-            <td>${row.timestamp}</td>
-            <td>${status}</td>
-          </tr>
-        `;
-      }).join('');
-    }
-
-    function renderQuotaTable() {
-      const tbody = document.getElementById('dashboard-quota-tbody');
-      tbody.innerHTML = dashboardData.quota.map((row) => {
-        return `
-          <tr>
-            <td>${row.line}</td>
-            <td>${row.shift}</td>
-            <td>${row.rq}</td>
-            <td>${row.aq}</td>
-            <td>${row.done ? '<span class="status-ok">Yes</span>' : '<span class="status-bad">No</span>'}</td>
-          </tr>
-        `;
-      }).join('');
-    }
-
     drawWeeklyLineChart();
     drawForecastBars();
-    renderProductTable();
-    renderQuotaTable();
-  </script> -->
+  </script> 
 </body>
 </html>
